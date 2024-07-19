@@ -20,7 +20,7 @@ const Home = () => {
   const [data, setData] = useState<IData[]>([]);
   const [activeRows, setActiveRows] = useState<Set<string>>(new Set());
 
-  const http = useMemo(() => new HttpService(), []); // Memoize the HttpService instance
+  const http = useMemo(() => new HttpService(), []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -36,7 +36,7 @@ const Home = () => {
     };
 
     fetchData();
-  }, [http]); // Depend on http instance
+  }, [http]);
 
   const tableHeader = useMemo(() => ['Name', 'Height', 'Hair color'], []);
 
