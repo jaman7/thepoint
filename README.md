@@ -1,4 +1,4 @@
-# sample-form-test-react
+# sample thepoint test
 
 ## Use git clone.
 
