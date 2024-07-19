@@ -1,6 +1,6 @@
 import HttpService from 'core/http/http.service';
 import { useEffect, useState, useMemo, useCallback } from 'react';
-import { StyledTableRow } from 'shared/utils/styled';
+import { StyledTableRow } from 'shared/components/styled';
 
 interface IData {
   name?: string;
