@@ -1,15 +1,12 @@
 import HttpService from 'core/http/http.service';
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
-
-import './Home.scss';
+import { useEffect, useState, useMemo, useCallback } from 'react';
+import { StyledTableRow } from 'shared/utils/styled';
 
 interface IData {
   name?: string;
   hair_color?: string;
   height?: string;
-  [name: string]: any;
+  [key: string]: any;
 }
 
 interface IRestData {
@@ -19,13 +16,9 @@ interface IRestData {
   results?: IData[];
 }
 
-const StyledTableRow = styled.tr<{ isActive: boolean }>`
-  color: ${({ isActive }) => (isActive ? 'red' : 'black')};
-`;
-
 const Home = () => {
   const [data, setData] = useState<IData[]>([]);
-  const [clickedRow, setClickedRow] = useState<string | null>(null);
+  const [activeRows, setActiveRows] = useState<Set<string>>(new Set());
 
   const http = new HttpService();
 
@@ -33,8 +26,8 @@ const Home = () => {
     const fetchData = async () => {
       try {
         const myData: IRestData = await http.get('https://swapi.dev/api/people/');
-        if (myData.results) {
-          const formattedData = myData.results.map(({ name, hair_color, height }) => ({ name, hair_color, height }));
+        if (myData?.results) {
+          const formattedData = myData.results.map(({ name, hair_color, height }) => ({ name, hair_color, height })) ?? [];
           setData(formattedData);
         }
       } catch (error) {
@@ -43,13 +36,21 @@ const Home = () => {
     };
 
     fetchData();
+  }, [http]);
+
+  const tableHeader = useMemo(() => ['Name', 'Height', 'Hair color'], []);
+
+  const toggleRowColor = useCallback((name: string) => {
+    setActiveRows(prevActiveRows => {
+      const newActiveRows = new Set(prevActiveRows);
+      if (newActiveRows.has(name)) {
+        newActiveRows.delete(name);
+      } else {
+        newActiveRows.add(name);
+      }
+      return newActiveRows;
+    });
   }, []);
-
-  const tableHeader = ['Name', 'Height', 'Hair color'];
-
-  const changeColor = (name: string) => {
-    setClickedRow(prevName => (prevName === name ? null : name));
-  };
 
   return (
     <table className="table">
@@ -61,12 +62,12 @@ const Home = () => {
         </tr>
       </thead>
       <tbody>
-        {data.map(item => (
-          <tr key={item.name} className={clickedRow === item.name ? 'active-row' : ''} onClick={() => changeColor(item?.name ?? '')}>
+        {data?.map(item => (
+          <StyledTableRow key={item.name} isActive={activeRows.has(item.name || '')} onClick={() => toggleRowColor(item.name || '')}>
             <td>{item.name}</td>
             <td>{item.height}</td>
             <td>{item.hair_color}</td>
-          </tr>
+          </StyledTableRow>
         ))}
       </tbody>
     </table>
