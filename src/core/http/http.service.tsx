@@ -2,11 +2,11 @@ import axios, { AxiosInstance, AxiosResponse, AxiosRequestConfig } from 'axios';
 import { EHttpMethod } from './http.enum';
 import { toHttpParams } from './http.utils';
 import { IParams } from './http.models';
-import { environment } from 'environment';
+// import { environment } from 'environment';
 
 class HttpService {
   private http: AxiosInstance;
-  private baseURL = environment.SERVER_API_URL;
+  private baseURL = '';
 
   constructor() {
     this.http = axios.create({
