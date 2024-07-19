@@ -2,31 +2,31 @@ import HttpService from 'core/http/http.service';
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import { StyledTableRow } from 'shared/components/styled';
 
-interface IData {
+type IData = {
   name?: string;
   hair_color?: string;
   height?: string;
   [key: string]: any;
-}
+};
 
-interface IRestData {
+type IRestData = {
   count: number;
   next: string;
   previous: null;
   results?: IData[];
-}
+};
 
 const Home = () => {
   const [data, setData] = useState<IData[]>([]);
   const [activeRows, setActiveRows] = useState<Set<string>>(new Set());
 
-  const http = new HttpService();
+  const http = useMemo(() => new HttpService(), []); // Memoize the HttpService instance
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const myData: IRestData = await http.get('https://swapi.dev/api/people/');
-        if (myData?.results) {
+        if (myData.results) {
           const formattedData = myData.results.map(({ name, hair_color, height }) => ({ name, hair_color, height })) ?? [];
           setData(formattedData);
         }
@@ -36,7 +36,7 @@ const Home = () => {
     };
 
     fetchData();
-  }, [http]);
+  }, [http]); // Depend on http instance
 
   const tableHeader = useMemo(() => ['Name', 'Height', 'Hair color'], []);
 
@@ -62,7 +62,7 @@ const Home = () => {
         </tr>
       </thead>
       <tbody>
-        {data?.map(item => (
+        {data.map(item => (
           <StyledTableRow key={item.name} isActive={activeRows.has(item.name || '')} onClick={() => toggleRowColor(item.name || '')}>
             <td>{item.name}</td>
             <td>{item.height}</td>
