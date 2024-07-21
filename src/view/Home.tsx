@@ -63,8 +63,8 @@ const Home = () => {
       </thead>
       <tbody>
         {data.map(item => (
-          <StyledTableRow key={item.name} isActive={activeRows.has(item.name || '')} onClick={() => toggleRowColor(item.name || '')}>
-            <td>{item.name}</td>
+          <StyledTableRow key={item.name} isActive={activeRows.has(item.name || '')}>
+            <td onClick={() => toggleRowColor(item.name || '')}>{item.name}</td>
             <td>{item.height}</td>
             <td>{item.hair_color}</td>
           </StyledTableRow>
